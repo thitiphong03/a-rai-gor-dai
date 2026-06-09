@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบสั่งจองยานพาหนะสุดหรู - ร้านเสี่ยเอ็ม</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #fafafa;
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #dfba6b 0%, #b38a37 100%);
+        }
+        .gold-border-glow:focus {
+            outline: none;
+            border-color: #b38a37;
+            box-shadow: 0 0 8px rgba(179, 138, 55, 0.4);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="w-full relative h-64 md:h-80 overflow-hidden bg-black">
+        <img src="https://thethaiger.com/th/wp-content/uploads/2025/12/%E0%B9%80%E0%B8%AD%E0%B9%87%E0%B8%A1-%E0%B8%AD%E0%B8%ON%E0%B8%B4%E0%B8%A7-%E0%B8%A3%E0%B8%B1%E0%B8%87%E0%B8%AA%E0%B8%B4%E0%B8%92-%E0%B8%AA%E0%B8%81%E0%B8%B4%E0%B8%99-1.jpg" 
+             alt="ร้านเสี่ยเอ็ม" class="w-full h-full object-cover opacity-60">
+        <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-4 bg-gradient-to-t from-black/80 to-transparent">
+            <h1 class="text-4xl md:text-5xl font-bold text-amber-400 tracking-wide drop-shadow-lg">เสี่ยเอ็ม ออนนิว รังสิต</h1>
+            <p class="text-white text-sm md:text-lg mt-2 font-light tracking-widest">ศูนย์รวมสุดยอดอาณาจักรยานพาหนะระดับ World Class</p>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 max-w-6xl grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-2 space-y-12">
+            
+            <div>
+                <h2 class="text-2xl font-semibold text-amber-700 border-b-2 border-amber-400 pb-2 mb-6 flex items-center">🏎️ เมนูยานพาหนะทางบก</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="land-menu"></div>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-amber-700 border-b-2 border-amber-400 pb-2 mb-6 flex items-center">🛥️ เมนูยานพาหนะทางน้ำ</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="water-menu"></div>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-semibold text-amber-700 border-b-2 border-amber-400 pb-2 mb-6 flex items-center">✈️ เมนูยานพาหนะทางอากาศ</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="air-menu"></div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-2xl shadow-xl border border-amber-200/60 p-6 sticky top-6 space-y-6">
+                <h2 class="text-2xl font-bold text-center text-amber-800 border-b pb-3">🛒 ตะกร้าใบสั่งจองของคุณ</h2>
+                
+                <div id="cart-items" class="space-y-4 max-h-64 overflow-y-auto pr-1 text-sm">
+                    <p class="text-center text-gray-400 py-6">ยังไม่มีสินค้าในตะกร้า เลือกเมนูด้านซ้ายได้เลยครับ</p>
+                </div>
+
+                <div class="border-t pt-4 space-y-2">
+                    <div class="flex justify-between text-gray-600">
+                        <span>จำนวนสินค้ารวม:</span>
+                        <span id="total-count" class="font-medium text-gray-900">0 ชิ้น</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xl font-bold text-amber-700">
+                        <span>ยอดรวมทั้งหมด:</span>
+                        <span id="total-price">0 บาท</span>
+                    </div>
+                </div>
+
+                <div class="border-t pt-4 space-y-3">
+                    <h3 class="font-medium text-gray-700">👤 ข้อมูลผู้สั่งจอง</h3>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">ชื่อ-นามสกุล ผู้สั่งจอง <span class="text-red-500">*</span></label>
+                        <input type="text" id="cust-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm gold-border-glow" placeholder="เช่น นายสมมุติ มั่งคั่ง">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">เบอร์โทรศัพท์ <span class="text-red-500">*</span></label>
+                        <input type="tel" id="cust-phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm gold-border-glow" placeholder="เช่น 0812345678">
+                    </div>
+                </div>
+
+                <div class="space-y-2 pt-2">
+                    <button onclick="submitOrder()" id="btn-submit" class="w-full gold-gradient hover:opacity-90 text-white font-medium py-3 rounded-xl transition duration-200 shadow-md cursor-pointer text-center block">
+                        🚀 ส่งข้อมูลการจองไปยังระบบเสี่ยเอ็ม
+                    </button>
+                    <button onclick="generatePDF()" id="btn-pdf" class="w-full bg-slate-800 hover:bg-slate-900 text-amber-400 font-medium py-2.5 rounded-xl transition duration-200 text-sm cursor-pointer hidden text-center items-center justify-center space-x-1">
+                        📄 ดาวน์โหลดใบเสร็จรับเงิน (PDF)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hidden">
+        <div id="receipt-pdf-template" class="p-8 bg-white text-gray-900" style="width: 700px; font-family: 'Prompt', sans-serif;">
+            <div class="text-center border-b-2 border-amber-500 pb-4 mb-6">
+                <h1 class="text-3xl font-bold text-amber-600">ใบเสร็จรับเงิน / ใบสั่งจองสินค้า</h1>
+                <p class="text-xl font-semibold text-gray-700 mt-1">ร้านเสี่ยเอ็ม ออนนิว รังสิต</p>
+                <p class="text-xs text-gray-400 mt-1">เอกสารจำลองระบบการสั่งซื้อยานพาหนะลักชูรี</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
+                <div>
+                    <p><span class="font-semibold">ชื่อลูกค้า:</span> <span id="pdf-cust-name">-</span></p>
+                    <p><span class="font-semibold">เบอร์โทรศัพท์:</span> <span id="pdf-cust-phone">-</span></p>
+                </div>
+                <div class="text-right">
+                    <p><span class="font-semibold">วันที่เวลาทำรายการ:</span> <span id="pdf-date">-</span></p>
+                    <p class="text-amber-600 font-semibold">สถานะ: รอการอนุมัติ / จองสำเร็จ</p>
+                </div>
+            </div>
+            <table class="w-full text-left text-sm border-collapse mb-6">
+                <thead>
+                    <tr class="bg-amber-500 text-white font-bold">
+                        <th class="p-2 rounded-l">ชื่อสินค้า</th>
+                        <th class="p-2 text-right">ราคาต่อหน่วย</th>
+                        <th class="p-2 text-center">จำนวน</th>
+                        <th class="p-2 text-right rounded-r">รวม (บาท)</th>
+                    </tr>
+                </thead>
+                <tbody id="pdf-table-body" class="divide-y divide-gray-200">
+                    </tbody>
+            </table>
+            <div class="flex justify-end text-right border-t pt-4">
+                <div class="w-1/2 space-y-1">
+                    <div class="text-lg font-bold text-amber-700">ยอดรวมสุทธิทั้งสิ้น: <span id="pdf-total-price">0</span> บาท</div>
+                </div>
+            </div>
+            <div class="text-center text-xs text-gray-400 mt-12 border-t pt-4">
+                ขอบพระคุณที่เลือกใช้บริการอาณาจักรความรวยของเสี่ยเอ็ม รังสิต
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-6 text-xs text-gray-400 border-t border-gray-200 mt-12 bg-white">
+        © 2026 เสี่ยเอ็ม ออนนิว รังสิต Luxury Vehicles System • Powered by Google Apps Script
+    </footer>
+
+    <script>
+        // 🛑 นำ URL จากการ Deploy Web App ของ Google Apps Script มาใส่ตรงนี้ครับ 🛑
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxZXEAnOP0u0sR0GQK6n_PTW_gxOg-dT7otsOup32iiCbH_nqK15MU_EVfxYF6KBWfC/exec";
+
+        // ข้อมูลสินค้าในระบบ
+        const products = [
+            // ทางบก
+            { id: 1, name: "GTR-R34", price: 1000000, category: "land", img: "https://img.icarcdn.com/autospinn/body/000000231831_9d230ce6_ce99_4023_97ed_3a515e777f99.jpg" },
+            { id: 2, name: "SUPRA Mk4", price: 1500000, category: "land", img: "https://images.pexels.com/photos/18339942/pexels-photo-18339942.jpeg" },
+            { id: 3, name: "Nissan NSX", price: 2000000, category: "land", img: "https://images.classic.com/vehicles/7c213ec0-e86b-433c-849d-ce6ee0959e5c.jpg?w=1200&h=676&fit=crop" },
+            { id: 4, name: "Honda ek9", price: 500000, category: "land", img: "https://ig-model.online/cdn/shop/products/2676-2_1024x1024@2x.jpg?v=1647000918" },
+            { id: 5, name: "honda s2000", price: 1000000, category: "land", img: "https://cdn.motor1.com/images/mgl/0eN8nj/s3/r4w8jwqa-zldd4tsiq0--edit.jpg" },
+            { id: 6, name: "mitsubishi lancer evo 7", price: 1500000, category: "land", img: "https://www.mitsubishi-motors.co.th/content/dam/mitsubishi-motors/images/site-images/discover/heritage/carousel/ExploreLancerEvolutionVII_1.jpg?width=2160&auto=webp&quality=70" },
+            { id: 7, name: "mitsubishi eclipse", price: 1500000, category: "land", img: "https://m.media-amazon.com/images/I/615FoNfyLaL.jpg" },
+            // ทางน้ำ
+            { id: 8, name: "เรือแต่งซิ่ง", price: 1000000, category: "water", img: "https://i.ytimg.com/vi/6M8yaoe0iCw/maxresdefault.jpg" },
+            { id: 9, name: "yacht", price: 50000000, category: "water", img: "https://th.aluxuryyacht.com/Content/upload/2019463444/201909041641343951382.jpg" },
+            // ทางอากาศ
+            { id: 10, name: "F16", price: 300000000, category: "air", img: "https://upload.wikimedia.org/wikipedia/commons/c/c9/F-16_June_2008.jpg" },
+            { id: 11, name: "F35", price: 100000000, category: "air", img: "https://f.ptcdn.info/290/037/000/nxn2u2bqmnUUpbIRhuw-o.jpg" },
+            { id: 12, name: "F22", price: 150000000, category: "air", img: "https://static.thairath.co.th/media/4DQpjUtzLUwmJZY54gCTAsvhxHVUN2s9yT6e5pveM7ES.jpg" },
+            { id: 13, name: "F50", price: 700000000, category: "air", img: "https://static.thairath.co.th/media/Dtbezn3nNUxytg04ajSwTsoxHBMRQG43JNuQJW48c4gokJ.webp" },
+            { id: 14, name: "FA-50", price: 720000000, category: "air", img: "https://www.tnnthailand.com/static/2026/5f9e7ad4-5684-42e7-a780-20f5829ba9f6.webp" }
+        ];
+
+        let cart = {};
+
+        // แสดงผลรายการสินค้าหน้าแรก
+        function renderMenu() {
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-xl shadow border border-gray-100 overflow-hidden flex flex-col justify-between transition hover:shadow-lg";
+                card.innerHTML = `
+                    <div class="h-44 bg-gray-100 relative">
+                        <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900">${p.name}</h3>
+                            <p class="text-amber-600 font-semibold text-md mt-1">${p.price.toLocaleString()} บาท</p>
+                        </div>
+                        <button onclick="addToCart(${p.id})" class="w-full mt-4 gold-gradient hover:opacity-95 text-white font-medium py-2 rounded-lg transition text-sm cursor-pointer flex justify-center items-center">
+                            ➕ เพิ่มลงตะกร้าสั่งจอง
+                        </button>
+                    </div>
+                `;
+                document.getElementById(`${p.category}-menu`).appendChild(card);
+            });
+        }
+
+        // จัดการตะกร้าสินค้า
+        function addToCart(id) {
+            if (cart[id]) {
+                cart[id]++;
+            } else {
+                cart[id] = 1;
+            }
+            updateCartUI();
+        }
+
+        function changeQty(id, amt) {
+            if (!cart[id]) return;
+            cart[id] += amt;
+            if (cart[id] <= 0) delete cart[id];
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            
+            let totalCount = 0;
+            let totalPrice = 0;
+            let keys = Object.keys(cart);
+
+            if(keys.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-400 py-6">ยังไม่มีสินค้าในตะกร้า เลือกเมนูด้านซ้ายได้เลยครับ</p>';
+                document.getElementById('total-count').innerText = "0 ชิ้น";
+                document.getElementById('total-price').innerText = "0 บาท";
+                return;
+            }
+
+            keys.forEach(id => {
+                const p = products.find(prod => prod.id == id);
+                const qty = cart[id];
+                totalCount += qty;
+                totalPrice += p.price * qty;
+
+                const itemRow = document.createElement('div');
+                itemRow.className = "flex justify-between items-center bg-amber-50/50 p-2.5 rounded-lg border border-amber-100";
+                itemRow.innerHTML = `
+                    <div class="flex-1 min-w-0 pr-2">
+                        <p class="font-medium text-gray-800 truncate">${p.name}</p>
+                        <p class="text-xs text-amber-600">${p.price.toLocaleString()} บาท</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="changeQty(${p.id}, -1)" class="w-6 h-6 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 flex items-center justify-center font-bold text-xs cursor-pointer">-</button>
+                        <span class="font-semibold text-gray-800 text-xs w-4 text-center">${qty}</span>
+                        <button onclick="changeQty(${p.id}, 1)" class="w-6 h-6 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 flex items-center justify-center font-bold text-xs cursor-pointer">+</button>
+                    </div>
+                `;
+                container.appendChild(itemRow);
+            });
+
+            document.getElementById('total-count').innerText = `${totalCount} ชิ้น`;
+            document.getElementById('total-price').innerText = `${totalPrice.toLocaleString()} บาท`;
+        }
+
+        // ส่งข้อมูลจองไปที่ Google Sheet
+        async function submitOrder() {
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const keys = Object.keys(cart);
+
+            if (!name || !phone) {
+                alert("กรุณากรอกชื่อและเบอร์โทรศัพท์ผู้จองก่อนทำรายการครับ!");
+                return;
+            }
+            if (keys.length === 0) {
+                alert("กรุณาเลือกเมนูสินค้าลงตะกร้าอย่างน้อย 1 รายการครับ!");
+                return;
+            }
+            if (WEB_APP_URL.includes("วาง_URL")) {
+                alert("กรุณาตั้งค่า URL Apps Script ในโค้ดตัวแปร WEB_APP_URL ก่อนส่งข้อมูลครับ!");
+                return;
+            }
+
+            const btnSubmit = document.getElementById('btn-submit');
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = "⏳ กำลังบันทึกยอดส่งเข้าคลังเสี่ยเอ็ม...";
+            btnSubmit.classList.add('opacity-50', 'cursor-not-allowed');
+
+            // เตรียมโครงสร้างชุดข้อมูล
+            let itemsArray = [];
+            let summaryTextArr = [];
+            let grandTotal = 0;
+
+            keys.forEach(id => {
+                const p = products.find(prod => prod.id == id);
+                const qty = cart[id];
+                grandTotal += p.price * qty;
+                itemsArray.push({ name: p.name, price: p.price, quantity: qty });
+                summaryTextArr.push(`${p.name} (${qty} ชิ้น)`);
+            });
+
+            const timestamp = new Date().toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' });
+
+            const payload = {
+                timestamp: timestamp,
+                customerName: name,
+                customerPhone: phone,
+                summaryText: summaryTextArr.join(', '),
+                totalPrice: grandTotal,
+                items: itemsArray
+            };
+
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                alert("✨ บันทึกใบสั่งจองลง Google Sheet เรียบร้อยแล้ว! สามารถกดดาวน์โหลดไฟล์ใบเสร็จ PDF ได้ทันทีครับ");
+                
+                // เปิดให้แสดงปุ่มดาวน์โหลด PDF
+                const btnPdf = document.getElementById('btn-pdf');
+                btnPdf.classList.remove('hidden');
+                btnPdf.classList.add('flex');
+                
+                // ดึงข้อมูลไปใส่รอไว้ในเทมเพลต PDF
+                document.getElementById('pdf-cust-name').innerText = name;
+                document.getElementById('pdf-cust-phone').innerText = phone;
+                document.getElementById('pdf-date').innerText = timestamp;
+                document.getElementById('pdf-total-price').innerText = grandTotal.toLocaleString();
+                
+                const pdfTbody = document.getElementById('pdf-table-body');
+                pdfTbody.innerHTML = '';
+                itemsArray.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="p-2 border-b">${item.name}</td>
+                        <td class="p-2 border-b text-right">${item.price.toLocaleString()}</td>
+                        <td class="p-2 border-b text-center">${item.quantity}</td>
+                        <td class="p-2 border-b text-right">${(item.price * item.quantity).toLocaleString()}</td>
+                    `;
+                    pdfTbody.appendChild(row);
+                });
+
+            } catch (e) {
+                console.error(e);
+                alert("เกิดความผิดพลาดในการส่งข้อมูลระบบภายนอก แต่คุณยังสามารถเปิดพิมพ์เอกสารได้");
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = "🚀 ส่งข้อมูลการจองไปยังระบบเสี่ยเอ็ม";
+                btnSubmit.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // ฟังชันก์สร้างและดาวน์โหลดไฟล์ PDF ใบเสร็จ
+        function generatePDF() {
+            const element = document.getElementById('receipt-pdf-template');
+            const name = document.getElementById('cust-name').value.trim();
+            
+            const opt = {
+                margin:       0.5,
+                filename:     `ใบเสร็จ_ร้านเสี่ยเอ็ม_${name}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            // เรียกคลังเอกสาร html2pdf เพื่อแปลง Element ที่ซ่อนไว้ให้โหลดลงเครื่องทันที
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // เริ่มโหลดแอป
+        renderMenu();
+    </script>
+</body>
+</html>
